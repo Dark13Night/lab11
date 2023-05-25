@@ -1,121 +1,27 @@
 ## Laboratory work XI
 
-Данная лабораторная работа посвещена изучению процесса создания сеансов совместной разработки с использованием инструмента **ngrok**
+Ngrok — это платформа, которая с помощью установленной утилиты, позволяет, организовать удалённый доступ на веб-сервер или какой-то другой сервис, запущенный ПК. Доступ организуется через созданный при запуске ngrok безопасный туннель. ПК, при этом, может находиться за NAT’ом, и не иметь статического IP адреса.
 
-```sh
-$ open https://ngrok.com/
-```
+Совсем не обязательно тащить тестовый проект куда-то ещё, можно показать его заказчику прямо с локальной машины, или, например, с помощью Ngrok можно очень легко расшарить файлы лежащие на ПК.
 
-## Tasks
+Вначале создаем папки: $ mkdir install $mkdir tmp Далее создаем переменные окружения: $ export HOME_PREFIX=pwd/install $ echo $HOME_PREFIX $ export USERNAME=whoami Скачиваем архив $ wget https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz
 
-- [ ] 1. Ознакомиться со ссылками учебного материала
-- [ ] 2. Выполнить инструкцию учебного материала
-- [ ] 3. Составить отчет и отправить ссылку личным сообщением в **Slack**
+Разархивируем его $ tar -xvzf libevent-2.1.8-stable.tar.gz
 
-## Tutorial
+Перемещаемся в папку с ним $ cd libevent-2.1.8-stable
 
-```sh
-$ cd ~
-$ mkdir install
-$ mkdir tmp
-$ export HOME_PREFIX=`pwd`/install
-$ echo $HOME_PREFIX
-$ export USERNAME=`whoami`
-```
+Указываем путь до директории для установки $ ./configure --prefix=${HOME_PREFIX}
 
-```sh
-$ cd tmp
-```
+Устанавливаем $ make && make install
 
-```sh
-$ wget https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz
-$ tar -xvzf libevent-2.1.8-stable.tar.gz
-$ cd libevent-2.1.8-stable
-$ ./configure --prefix=${HOME_PREFIX}
-$ make && make install
-$ cd ..
-```
+Перемещаемся обратно в исходную папку
 
-```sh
-$ wget http://invisible-island.net/datafiles/release/ncurses.tar.gz
-$ tar -xvzf ncurses.tar.gz
-$ cd ncurses-5.9
-$ ./configure --prefix=${HOME_PREFIX}
-$ make && make install
-$ cd ..
-```
+$ cd..
 
+Проделываем тоже самое с архивами ncurses и tmux. Для 1-ого:
 
-```sh
-$ wget https://github.com/tmux/tmux/releases/download/2.5/tmux-2.5.tar.gz
-$ tar -xvzf tmux-2.5.tar.gz
-$ cd tmux-2.5
-$ ./configure --prefix=${HOME_PREFIX} CFLAGS="-I${HOME_PREFIX}/include -I${HOME_PREFIX}/include/ncurses" LDFLAGS="-L${HOME_PREFIX}/lib"
-$ make && make install
-$ cd ..
-```
+$ wget http://invisible-island.net/datafiles/release/ncurses.tar.gz $ tar -xvzf ncurses.tar.gz $ cd ncurses-6.3 $ ./configure --prefix=${HOME_PREFIX} $ make && make install $ cd .. Для второго $ wget https://github.com/tmux/tmux/releases/download/2.5/tmux-2.5.tar.gz $ tar -xvzf tmux-2.5.tar.gz $ cd tmux-2.5 $ ./configure --prefix=${HOME_PREFIX} CFLAGS="-I${HOME_PREFIX}/include -I${HOME_PREFIX}/include/ncurses" LDFLAGS="-L${HOME_PREFIX}/lib" $ make && make install $ cd .. Скачиваем архив ngrok и разархивируем его $ wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip $ unizp ngrok-stable-linux-amd64.zip $ mv ngrok ${HOME_PREFIX}/bin Создаем переменные окружения и запускаем tmux $ export LD_LIBRARY_PATH=${HOME_PREFIX}/lib $ export PATH="${HOME_PREFIX}/bin:${PATH}" $ tmux
 
-```sh
-$ wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
-$ unizp ngrok-stable-linux-amd64.zip
-$ mv ngrok ${HOME_PREFIX}/bin
-```
+Далее мы удаляем папки tmp и install. И выполняем: $ brew install tmux ngrok Запускаем новую сессию в tmux $ tmux new -s session_with_group Далее на одном компьютере выполняем следущие действия: переходим на сайт для регистрации $ open https://ngrok.com/signup создаем переменную окружения $ export NGROK_TOKEN=<токен> авторизуемся в ngrok $ ngrok authtoken ${NGROK_TOKEN} указываем тип протокола и порт подключения <порт_ngrok_сервера> $ ngrok tcp 22
 
-```sh
-$ export LD_LIBRARY_PATH=${HOME_PREFIX}/lib
-$ export PATH="${HOME_PREFIX}/bin:${PATH}"
-$ tmux
-```
-
-```sh
-$ cd ~
-$ rm -rf tmp install
-```
-
-```sh
-$ brew install tmux ngrok # or use linuxbrew 🎉
-```
-
-```sh
-$ tmux new -s session_with_group
-```
-
-```sh
-# Alisa:
-$ open https://ngrok.com/signup
-$ export NGROK_TOKEN=<токен>
-$ ngrok authtoken ${NGROK_TOKEN}
-$ ngrok tcp 22
-<порт_ngrok_сервера>
-```
-
-```sh
-# Bob:
-$ ssh ${USERNAME}@0.tcp.ngrok.io -p<порт_ngrok_сервера>
-<пароль_от_учетной_записи>
-$ tmux a -t session_with_group
-$ <C-B>"
-```
-
-## Report
-
-```sh
-$ cd ~/workspace/
-$ export LAB_NUMBER=11
-$ git clone https://github.com/tp-labs/lab${LAB_NUMBER}.git tasks/lab${LAB_NUMBER}
-$ mkdir reports/lab${LAB_NUMBER}
-$ cp tasks/lab${LAB_NUMBER}/README.md reports/lab${LAB_NUMBER}/REPORT.md
-$ cd reports/lab${LAB_NUMBER}
-$ edit REPORT.md
-$ gist REPORT.md
-```
-
-## Links
-
-- [Tmux](https://raw.githubusercontent.com/tmux/tmux/master/README)
-- [Libevent](http://libevent.org)
-- [Ncurses](http://invisible-island.net/ncurses/)
-
-```
-Copyright (c) 2015-2021 The ISC Authors
-```
+На втором компьютере : $ ssh ${USERNAME}@0.tcp.ngrok.io -p<порт_ngrok_сервера> <пароль_от_учетной_записи> подключаемся к созданной сессии $ tmux a -t session_with_group После этих действий мы обеспечили доступ с одного компьютера к другому.
