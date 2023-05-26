@@ -5,13 +5,17 @@ Ngrok — это платформа, которая с помощью устан
 Совсем не обязательно тащить тестовый проект куда-то ещё, можно показать его заказчику прямо с локальной машины, или, например, с помощью Ngrok можно очень легко расшарить файлы лежащие на ПК.
 
 Вначале создаем папки: 
-```$ mkdir install
- $mkdir tmp ```
+```
+$ mkdir install 
+$mkdir tmp 
+```
 
 Далее создаем переменные окружения: 
-```$ export HOME_PREFIX=pwd/install
+```
+$ export HOME_PREFIX=pwd/install
  $ echo $HOME_PREFIX
- $ export USERNAME=whoami ```
+ $ export USERNAME=whoami 
+```
 
 Скачиваем архив 
 ```$ wget https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz```
@@ -40,6 +44,7 @@ $ make && make install
 $ cd .. 
 ```
 Для второго 
+```
 $ wget https://github.com/tmux/tmux/releases/download/2.5/tmux-2.5.tar.gz 
 $ tar -xvzf tmux-2.5.tar.gz 
 $ cd tmux-2.5 
